@@ -8,16 +8,16 @@ HasImagePlaneDetails:False
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:True|notes:['To begin creating your project, use the Images module to compile a list of files and/or folders that you want to analyze. You can also specify a set of rules to include only the desired files in your selected folders.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
-    Select the rule criteria:and (file does contain "") (directory doesnot containregexp "[\\/].")
+    Select the rule criteria:and (file does contain "") (directory doesnot containregexp "[\/].")
 
 Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:True|notes:['The Metadata module optionally allows you to extract information describing your images (i.e, metadata) which will be stored along with your measurements. This information can be contained in the file name and/or location, or in an external file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Extract metadata?:No
+    Extract metadata?:Yes
     Metadata data type:Text
     Metadata types:{}
     Extraction method count:1
     Metadata extraction method:Extract from file/folder names
     Metadata source:File name
-    Regular expression to extract from file name:^r(?P<WellRow>\d{2})c(?P<WellColumn>\d{2})f(?P<WellField>\d{2})p\d{2}-ch(?P<ChannelNumber>\d)
+    Regular expression to extract from file name:^r(?P<WellRow>\d{2})c(?P<WellColumn>\d{2})f(?P<Site>\d{2})p\d{2}-ch(?P<ChannelNumber>\d)
     Regular expression to extract from folder name:(?P<Date>[0-9]{4}_[0-9]{2}_[0-9]{2})$
     Extract metadata from:All images
     Select the filtering criteria:and (file does contain "")
@@ -53,7 +53,7 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Select the image type:Grayscale image
     Set intensity range from:Image metadata
     Maximum intensity:255.0
-    Select the rule criteria:and (file does contain "ch3")
+    Select the rule criteria:and (file does contain "ch4")
     Name to assign these images:SMI312
     Name to assign these objects:Speckle
     Select the image type:Grayscale image
@@ -108,7 +108,7 @@ Threshold:[module_num:6|svn_version:'Unknown'|variable_revision_number:12|show_w
     Thresholding method:Minimum Cross-Entropy
     Threshold smoothing scale:0.0
     Threshold correction factor:1.5
-    Lower and upper bounds on threshold:0.01,1.0
+    Lower and upper bounds on threshold:0.05,1.0
     Manual threshold:0.0
     Select the measurement to threshold with:None
     Two-class or three-class thresholding?:Two classes
@@ -149,7 +149,7 @@ IdentifySecondaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_n
     Thresholding method:Minimum Cross-Entropy
     Threshold smoothing scale:0.0
     Threshold correction factor:1.0
-    Lower and upper bounds on threshold:0.003,1.0
+    Lower and upper bounds on threshold:0.07,1.0
     Manual threshold:0.0
     Select the measurement to threshold with:None
     Two-class or three-class thresholding?:Two classes
@@ -193,24 +193,7 @@ IdentifySecondaryObjects:[module_num:9|svn_version:'Unknown'|variable_revision_n
     # of deviations:2.0
     Thresholding method:Sauvola
 
-IdentifyTertiaryObjects:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Both SMI312 and MAP2 stain the cell body next to axons and dendrites, respectively. By removing the dendrites+cellbody (MAP2) from the axons+cellbody (SMI312) only the axons will remain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the larger identified objects:Axons_with_Nuclei
-    Select the smaller identified objects:Dendrites_with_Nuclei
-    Name the tertiary objects to be identified:Axons
-    Shrink smaller object prior to subtraction?:No
-
-IdentifyTertiaryObjects:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Both SMI312 and MAP2 stain the cell body next to axons and dendrites, respectively. By removing the axons+cellbody (SMI312) from the dendrites+cellbody (MAP2) only the dendrites will remain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the larger identified objects:Dendrites_with_Nuclei
-    Select the smaller identified objects:Axons_with_Nuclei
-    Name the tertiary objects to be identified:Dendrites
-    Shrink smaller object prior to subtraction?:No
-
-MeasureObjectSizeShape:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure the size and shape of axons and dendrites.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select object sets to measure:Axons, Dendrites
-    Calculate the Zernike features?:No
-    Calculate the advanced features?:No
-
-MaskObjects:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Both SMI312 and MAP2 stain the cell body. By masking the SMI312 staining with the MAP2 staining the overlap is the cell body.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MaskObjects:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Both SMI312 and MAP2 stain the cell body. By masking the SMI312 staining with the MAP2 staining the overlap is the cell body.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to be masked:Axons_with_Nuclei
     Name the masked objects:CellBody
     Mask using a region defined by other objects or by binary image?:Objects
@@ -221,13 +204,30 @@ MaskObjects:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show
     Numbering of resulting objects:Renumber
     Invert the mask?:No
 
-ConvertObjectsToImage:[module_num:14|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The skeleton module needs a binary picture so here the identified axons are converted to binary image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+IdentifyTertiaryObjects:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Both SMI312 and MAP2 stain the cell body next to axons and dendrites, respectively. By removing the dendrites+cellbody (MAP2) from the axons+cellbody (SMI312) only the axons will remain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Axons_with_Nuclei
+    Select the smaller identified objects:CellBody
+    Name the tertiary objects to be identified:Axons
+    Shrink smaller object prior to subtraction?:No
+
+IdentifyTertiaryObjects:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Both SMI312 and MAP2 stain the cell body next to axons and dendrites, respectively. By removing the axons+cellbody (SMI312) from the dendrites+cellbody (MAP2) only the dendrites will remain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Dendrites_with_Nuclei
+    Select the smaller identified objects:CellBody
+    Name the tertiary objects to be identified:Dendrites
+    Shrink smaller object prior to subtraction?:No
+
+MeasureObjectSizeShape:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Measure the size and shape of axons and dendrites.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:Axons, Dendrites
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+ConvertObjectsToImage:[module_num:14|svn_version:'Unknown'|variable_revision_number:1|show_window:True|notes:['The skeleton module needs a binary picture so here the identified axons are converted to binary image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:Axons
     Name the output image:AxonsBinary
     Select the color format:Binary (black & white)
     Select the colormap:Default
 
-ConvertObjectsToImage:[module_num:15|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The skeleton module needs a binary picture so here the identified dendrites are converted to binary image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ConvertObjectsToImage:[module_num:15|svn_version:'Unknown'|variable_revision_number:1|show_window:True|notes:['The skeleton module needs a binary picture so here the identified dendrites are converted to binary image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:Dendrites
     Name the output image:DendritesBinary
     Select the color format:Binary (black & white)
@@ -242,7 +242,7 @@ MeasureObjectSkeleton:[module_num:16|svn_version:'Unknown'|variable_revision_num
     Maximum hole size:10
     Export the skeleton graph relationships?:No
     Intensity image:EnhancedTuji1
-    File output directory:Default Input Folder sub-folder|Desktop\Düsseldorf\CellProfiler\test images neurites
+    File output directory:Default Input Folder sub-folder|Desktop\Düsseldorf\CellProfiler	est images neurites
     Vertex file name:vertices.csv
     Edge file name:edges.csv
 
@@ -267,7 +267,7 @@ ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_numbe
     Calculate the per-image mean values for object measurements?:No
     Calculate the per-image median values for object measurements?:No
     Calculate the per-image standard deviation values for object measurements?:No
-    Output file location:Default Input Folder sub-folder|Desktop\\fibronectin
+    Output file location:Default Input Folder sub-folder|Desktop
     Create a GenePattern GCT file?:No
     Select source of sample row name:Metadata
     Select the image to use as the identifier:None
@@ -276,7 +276,7 @@ ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_numbe
     Press button to select measurements:Image|Count_Nucleus,Image|FileName_Tuji1,Image|FileName_Hoechst,Image|FileName_MAP2,Image|Metadata_WellField,Image|Metadata_WellColumn,Image|Metadata_Series,Image|Metadata_FileLocation,Image|Metadata_ChannelNumber,Image|Metadata_Well,Image|Metadata_Frame,Image|Metadata_WellRow,Image|Group_Number,Image|Group_Index,Experiment|Run_Timestamp,Experiment|CellProfiler_Version,Experiment|Pipeline_Pipeline,Experiment|Metadata_GroupingTags,Experiment|Modification_Timestamp
     Representation of Nan/Inf:NaN
     Add a prefix to file names?:Yes
-    Filename prefix:dif17
+    Filename prefix:test
     Overwrite existing files without warning?:No
     Data to export:Image
     Combine these object measurements with those of the previous object?:No
