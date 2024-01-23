@@ -1,0 +1,526 @@
+CellProfiler Pipeline: http://www.cellprofiler.org
+Version:5
+DateRevision:421
+GitHash:
+ModuleCount:35
+HasImagePlaneDetails:False
+
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Drag and drop your images here.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    :
+    Filter images?:Images only
+    Select the rule criteria:and (file does contain "") (directory doesnot containregexp "[\\/].")
+
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['The Metadata module optionally allows you to extract information describing your images (i.e, metadata) which will be stored along with your measurements. This information can be contained in the file name and/or location, or in an external file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Extract metadata?:Yes
+    Metadata data type:Text
+    Metadata types:{}
+    Extraction method count:1
+    Metadata extraction method:Extract from file/folder names
+    Metadata source:File name
+    Regular expression to extract from file name:^r(?P<WellRow>\d{2})c(?P<WellColumn>\d{2})f(?P<Site>\d{2})p\d{2}-ch(?P<ChannelNumber>\d)
+    Regular expression to extract from folder name:(?P<Date>[0-9]{4}_[0-9]{2}_[0-9]{2})$
+    Extract metadata from:All images
+    Select the filtering criteria:and (file does contain "")
+    Metadata file location:Elsewhere...|
+    Match file and image metadata:[]
+    Use case insensitive matching?:No
+    Metadata file name:None
+    Does cached metadata exist?:No
+
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['Assign a meaningful name to each image by which other modules will refer to it.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Assign a name to:Images matching rules
+    Select the image type:Grayscale image
+    Name to assign these images:DNA
+    Match metadata:[]
+    Image set matching method:Order
+    Set intensity range from:Image metadata
+    Assignments count:3
+    Single images count:0
+    Maximum intensity:255.0
+    Process as 3D?:No
+    Relative pixel spacing in X:1.0
+    Relative pixel spacing in Y:1.0
+    Relative pixel spacing in Z:1.0
+    Select the rule criteria:and (file does contain "ch1")
+    Name to assign these images:Hoechst
+    Name to assign these objects:Cell
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Maximum intensity:255.0
+    Select the rule criteria:and (file does contain "ch2")
+    Name to assign these images:MAP2
+    Name to assign these objects:Nucleus
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Maximum intensity:255.0
+    Select the rule criteria:and (file does contain "ch3")
+    Name to assign these images:SMI312
+    Name to assign these objects:Cytoplasm
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Maximum intensity:255.0
+
+Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['The Groups module optionally allows you to split your list of images into image subsets (groups) which will be processed independently of each other. Examples of groupings include screening batches, microtiter plates, time-lapse movies, etc.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Do you want to group your images?:No
+    grouping metadata count:2
+    Metadata category:Well
+    Metadata category:Well
+
+IdentifyPrimaryObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Identify nuclei via Hoechst staining. Adjust the typical diameter of objects according to your images. You can measure it when you have an image open via the measure tool.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:Hoechst
+    Name the primary objects to be identified:Nucleus
+    Typical diameter of objects, in pixel units (Min,Max):15,60
+    Discard objects outside the diameter range?:Yes
+    Discard objects touching the border of the image?:Yes
+    Method to distinguish clumped objects:Intensity
+    Method to draw dividing lines between clumped objects:Intensity
+    Size of smoothing filter:7
+    Suppress local maxima that are closer than this minimum allowed distance:16
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Fill holes in identified objects?:After declumping only
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:Yes
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1.3488
+    Threshold correction factor:1.3488
+    Lower and upper bounds on threshold:0.1,1.0
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:50
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2.0
+    Thresholding method:Minimum Cross-Entropy
+
+Threshold:[module_num:6|svn_version:'Unknown'|variable_revision_number:12|show_window:False|notes:['Threshold the MAP2 to mask the nuclei (the module MaskObject needs a binary image).', "Ideally, we only have neuronal nuclei in the culture, but let's be honest, that's usually not the case. Therefore, I want to make a subset of the previously identified nuclei which I am sure are neuronal. This will be done by masking the nuclei with the MAP2 staining, as this also stains the soma/nuclei of neurons (at least when they're a bit younger; you might want to confirm this beforehand)."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:MAP2
+    Name the output image:BinaryMAP2
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:0.0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.005,0.5
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:50
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2.0
+    Thresholding method:Minimum Cross-Entropy
+
+MaskObjects:[module_num:7|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Mask the nuclei with the MAP2 binary images to keep only nuclei that are MAP2 positiv (=neurons).', "You might want to change the setting of 'Handling of objects that are partially masked' depending on how strong the MAP2 signal is. If you keep a lot of nuclei you don't believe to be really MAP2 positive, change it to 'Remove depending on overlap' and determine the best value empirically."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select objects to be masked:Nucleus
+    Name the masked objects:MaskedNuclei
+    Mask using a region defined by other objects or by binary image?:Image
+    Select the masking object:None
+    Select the masking image:BinaryMAP2
+    Handling of objects that are partially masked:Remove depending on overlap
+    Fraction of object that must overlap:0.25
+    Numbering of resulting objects:Renumber
+    Invert the mask?:No
+
+ExpandOrShrinkObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Expand nuclei to get "soma".', '', 'Later on, we want to substract the soma from the identified cellular structure. For this, we just assume that the soma has the same shape as the nuclei and make the nuclei bigger by a certain number of pixels. These number needs to be determined empirically.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:MaskedNuclei
+    Name the output objects:Expanded_nuclei
+    Select the operation:Expand objects by a specified number of pixels
+    Number of pixels by which to expand or shrink:12
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+EnhanceOrSuppressFeatures:[module_num:9|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:['Enhance the MAP2 signal.', 'Sometimes this helps to enhance the signal in the finer neurite structures, but not always. If you have nice images this is not needed and should be deselected (this saves time).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:MAP2
+    Name the output image:MAP2_enhanced
+    Select the operation:Enhance
+    Feature size:10
+    Feature type:Neurites
+    Range of hole sizes:1,10
+    Smoothing scale:2.0
+    Shear angle:0.0
+    Decay:0.95
+    Enhancement method:Line structures
+    Speed and accuracy:Fast
+    Rescale result image:No
+
+IdentifySecondaryObjects:[module_num:10|svn_version:'Unknown'|variable_revision_number:10|show_window:False|notes:['Identify dendrites (+cell body) by using the MAP2 image around the already identified nuclei.', '', "Change the input image to 'MAP2_enhanced' if you have enabled the previous module. Change the 'Threshold smooting scale' if the outline of the identified structures is all edgy and gives a wiggly line when it should be more or less straight. This will affect the sceletonization of the neurites later on."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:MaskedNuclei
+    Name the objects to be identified:Dendrites_with_Nuclei
+    Select the method to identify the secondary objects:Propagation
+    Select the input image:MAP2_enhanced
+    Number of pixels by which to expand the primary objects:10
+    Regularization factor:0.05
+    Discard secondary objects touching the border of the image?:No
+    Discard the associated primary objects?:No
+    Name the new primary objects:FilteredNuclei
+    Fill holes in identified objects?:No
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1.3488
+    Threshold correction factor:1.3488
+    Lower and upper bounds on threshold:0.0001,0.01
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:50
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2.0
+    Thresholding method:Minimum Cross-Entropy
+
+IdentifyTertiaryObjects:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['MAP2 stains the cell body next to the neurites. By removing the soma/expanded nuclei only the neurites will remain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Dendrites_with_Nuclei
+    Select the smaller identified objects:Expanded_nuclei
+    Name the tertiary objects to be identified:Dendrites
+    Shrink smaller object prior to subtraction?:No
+
+SplitOrMergeObjects:[module_num:12|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['After removing the nuclei, some objects are not continuous anymore; this will split them into seperate objects. Otherwise the measurement modules will not measure these objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Dendrites
+    Name the new objects:DendritesSingle
+    Operation:Split
+    Maximum distance within which to merge objects:0
+    Merge using a grayscale image?:No
+    Select the grayscale image to guide merging:None
+    Minimum intensity fraction:0.9
+    Method to find object intensity:Closest point
+    Merging method:Distance
+    Select the parent object:None
+    Output object type:Disconnected
+
+EnhanceOrSuppressFeatures:[module_num:13|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:SMI312
+    Name the output image:SMI_enhanced
+    Select the operation:Enhance
+    Feature size:10
+    Feature type:Neurites
+    Range of hole sizes:1,10
+    Smoothing scale:2.0
+    Shear angle:0.0
+    Decay:0.95
+    Enhancement method:Tubeness
+    Speed and accuracy:Fast
+    Rescale result image:No
+
+Closing:[module_num:14|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['This closes small holes in the enhanced SMI312 signal (due to differing intensities along the neurite). The holes would hinder proper detection of the neurites in the next module.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:SMI_enhanced
+    Name the output image:SMI_closed
+    Structuring element:disk,3
+
+IdentifySecondaryObjects:[module_num:15|svn_version:'Unknown'|variable_revision_number:10|show_window:False|notes:['Identify axons (+cell body) by using the SMI312 image around the already identified nuclei.', "Change the 'Threshold smooting scale' if the outline of the identified structures is all edgy and gives a wiggly line when it should be more or less straight. This will affect the sceletonization of the neurits later on."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:MaskedNuclei
+    Name the objects to be identified:Axons_with_Nuclei
+    Select the method to identify the secondary objects:Propagation
+    Select the input image:SMI_closed
+    Number of pixels by which to expand the primary objects:10
+    Regularization factor:0.05
+    Discard secondary objects touching the border of the image?:No
+    Discard the associated primary objects?:No
+    Name the new primary objects:FilteredNuclei
+    Fill holes in identified objects?:Yes
+    Threshold setting version:12
+    Threshold strategy:Adaptive
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1.3488
+    Threshold correction factor:1.3488
+    Lower and upper bounds on threshold:0.0001,0.1
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:100
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2.0
+    Thresholding method:Minimum Cross-Entropy
+
+IdentifyTertiaryObjects:[module_num:16|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['SMI312 stains the cell body next to the neurites. By removing the soma/expanded nuclei only the neurites will remain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Axons_with_Nuclei
+    Select the smaller identified objects:Expanded_nuclei
+    Name the tertiary objects to be identified:Axons
+    Shrink smaller object prior to subtraction?:No
+
+SplitOrMergeObjects:[module_num:17|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['After removing the nuclei, some objects are not continuous anymore; this will split them into seperate objects. Otherwise the measurement modules will not measure these objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Axons
+    Name the new objects:AxonsSingle
+    Operation:Split
+    Maximum distance within which to merge objects:0
+    Merge using a grayscale image?:No
+    Select the grayscale image to guide merging:None
+    Minimum intensity fraction:0.9
+    Method to find object intensity:Closest point
+    Merging method:Distance
+    Select the parent object:None
+    Output object type:Disconnected
+
+MeasureObjectSizeShape:[module_num:18|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure the size and shape of the neurites; this is mainly to filter out any dots/speckles which are likely not actual neurites.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:AxonsSingle, DendritesSingle
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+FilterObjects:[module_num:19|svn_version:'Unknown'|variable_revision_number:9|show_window:False|notes:['Remove the objects that are too small, to get rid of dots/speckles.', '', "You can change which measurement you're basing the filter on depending on what gives you the best results and you can combine several measurements. When in test mode, you can open 'View Workspace' and have the measurements depicted over the objects to identify the values."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the objects to filter:DendritesSingle
+    Name the output objects:DendritesFiltered
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Select the location of the rules or classifier file:Elsewhere...|
+    Rules or classifier file name:rules.txt
+    Class number:1
+    Measurement count:3
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Keep removed objects as a seperate set?:No
+    Name the objects removed by the filter:RemovedObjects
+    Select the measurement to filter by:AreaShape_Eccentricity
+    Filter using a minimum measurement value?:Yes
+    Minimum value:0.8
+    Filter using a maximum measurement value?:No
+    Maximum value:1
+    Select the measurement to filter by:AreaShape_Area
+    Filter using a minimum measurement value?:Yes
+    Minimum value:200
+    Filter using a maximum measurement value?:No
+    Maximum value:1.0
+    Select the measurement to filter by:AreaShape_MedianRadius
+    Filter using a minimum measurement value?:No
+    Minimum value:0.0
+    Filter using a maximum measurement value?:Yes
+    Maximum value:5
+
+FilterObjects:[module_num:20|svn_version:'Unknown'|variable_revision_number:9|show_window:False|notes:['Remove the objects that are too small, to get rid of dots/speckles.', '', "You can change which measurement you're basing the filter on depending on what gives you the best results."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the objects to filter:AxonsSingle
+    Name the output objects:AxonsFiltered
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Select the location of the rules or classifier file:Elsewhere...|
+    Rules or classifier file name:rules.txt
+    Class number:1
+    Measurement count:1
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Keep removed objects as a seperate set?:No
+    Name the objects removed by the filter:RemovedObjects
+    Select the measurement to filter by:AreaShape_MajorAxisLength
+    Filter using a minimum measurement value?:Yes
+    Minimum value:30
+    Filter using a maximum measurement value?:No
+    Maximum value:1
+
+ExpandOrShrinkObjects:[module_num:21|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Expand the (already) expanded nuclei a bit further so I can relate them to the dendrites and axons., as this requires a bit of an overlap.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Expanded_nuclei
+    Name the output objects:Expanded_nuclei_plus
+    Select the operation:Expand objects by a specified number of pixels
+    Number of pixels by which to expand or shrink:2
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+RelateObjects:[module_num:22|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Relate the nuclei with the filtered dendrites (assigns a parent-child relationship between these objects). Because of the filtering etc. before, the objects dont belong to a nucleus anymore. But because for example the MeasureObjectSkeleton starts from the nucleus this is useful. Furthermore we can determine how many dendrites belong to one nucleus.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Parent objects:Expanded_nuclei_plus
+    Child objects:DendritesFiltered
+    Calculate child-parent distances?:None
+    Calculate per-parent means for all child measurements?:No
+    Calculate distances to other parents?:No
+    Do you want to save the children with parents as a new object set?:No
+    Name the output object:RelateObjects
+    Parent name:None
+
+RelateObjects:[module_num:23|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Relate the nuclei with the filtered axons (assigns a parent-child relationship between these objects). Because of the filtering', ' etc. before', ' the objects dont belong to a nucleus anymore. But because for example the MeasureObjectSkeleton starts from the nucleus this is useful. Furthermore', ' we can determine how many axons belong to one nucleus.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Parent objects:Expanded_nuclei_plus
+    Child objects:AxonsFiltered
+    Calculate child-parent distances?:None
+    Calculate per-parent means for all child measurements?:No
+    Calculate distances to other parents?:No
+    Do you want to save the children with parents as a new object set?:No
+    Name the output object:RelateObjects
+    Parent name:None
+
+FilterObjects:[module_num:24|svn_version:'Unknown'|variable_revision_number:9|show_window:False|notes:['Filter the related nuclei and keep only the ones that have dendrites as children. This means that I have a number of neurons which have dendrites that I have identified as actual dendrites (the DendritesFiltered).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the objects to filter:Expanded_nuclei_plus
+    Name the output objects:NucleiDendrites
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Select the location of the rules or classifier file:Elsewhere...|
+    Rules or classifier file name:rules.txt
+    Class number:1
+    Measurement count:1
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Keep removed objects as a seperate set?:No
+    Name the objects removed by the filter:RemovedObjects
+    Select the measurement to filter by:Children_DendritesFiltered_Count
+    Filter using a minimum measurement value?:Yes
+    Minimum value:1
+    Filter using a maximum measurement value?:No
+    Maximum value:1.0
+
+FilterObjects:[module_num:25|svn_version:'Unknown'|variable_revision_number:9|show_window:False|notes:['Filter the expanded nuclei and keep only the ones that have axons as children. This means that I have a number of neurons which have axons that I have identified as actual axons (the AxonsFiltered).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the objects to filter:Expanded_nuclei_plus
+    Name the output objects:NucleiAxons
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Select the location of the rules or classifier file:Elsewhere...|
+    Rules or classifier file name:rules.txt
+    Class number:1
+    Measurement count:1
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Keep removed objects as a seperate set?:No
+    Name the objects removed by the filter:RemovedObjects
+    Select the measurement to filter by:Children_AxonsFiltered_Count
+    Filter using a minimum measurement value?:Yes
+    Minimum value:1
+    Filter using a maximum measurement value?:No
+    Maximum value:1.0
+
+ExpandOrShrinkObjects:[module_num:26|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Skeletonize the dendrites.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:DendritesFiltered
+    Name the output objects:DendritesSkeleton
+    Select the operation:Skeletonize each object
+    Number of pixels by which to expand or shrink:1
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+ExpandOrShrinkObjects:[module_num:27|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:["Remove small protrusions which would be later recognized as branch points although they're not. The number of pixels by which to shrink needs to be determined empirically."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:DendritesSkeleton
+    Name the output objects:DendritesSkeletonClean
+    Select the operation:Remove spurs
+    Number of pixels by which to expand or shrink:5
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+ConvertObjectsToImage:[module_num:28|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The next modules are necessary so that the individual object identities (from the dendrites) are used for measuring the skeleton attributes.', 'The identified dendrites are converted to an image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:DendritesSkeletonClean
+    Name the output image:DendritesSkeletonClean
+    Select the color format:Binary (black & white)
+    Select the colormap:Default
+
+MeasureObjectSkeleton:[module_num:29|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['This measures the skeletal features (branches, endpoints, trunks) for the dendrites starting from the cell body.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the seed objects:NucleiDendrites
+    Select the skeletonized image:DendritesSkeletonClean
+    Retain the branchpoint image?:No
+    Name the branchpoint image:BranchpointImage
+    Fill small holes?:Yes
+    Maximum hole size:10
+    Export the skeleton graph relationships?:No
+    Intensity image:None
+    File output directory:Default Output Folder|
+    Vertex file name:vertices.csv
+    Edge file name:edges.csv
+
+ExpandOrShrinkObjects:[module_num:30|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Skeletonize the axons.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:AxonsFiltered
+    Name the output objects:AxonsSkeleton
+    Select the operation:Skeletonize each object
+    Number of pixels by which to expand or shrink:1
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+ExpandOrShrinkObjects:[module_num:31|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:["Remove small protrusions which would be later recognized as branch points although they're not. The number of pixels by which to shrink needs to be determined empirically."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:AxonsSkeleton
+    Name the output objects:AxonsSkeletonClean
+    Select the operation:Remove spurs
+    Number of pixels by which to expand or shrink:2
+    Fill holes in objects so that all objects shrink to a single point?:No
+
+ConvertObjectsToImage:[module_num:32|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The next modules are necessary so that the individual object identities (from the axons) are used for measuring the skeleton attributes.', 'The identified axons are converted to an image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:AxonsSkeletonClean
+    Name the output image:AxonsSkeletonClean
+    Select the color format:Binary (black & white)
+    Select the colormap:Default
+
+MeasureObjectSkeleton:[module_num:33|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['This measures the skeletal features (branches, endpoints, trunks) for the axons starting from the cell body.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the seed objects:NucleiAxons
+    Select the skeletonized image:AxonsSkeletonClean
+    Retain the branchpoint image?:No
+    Name the branchpoint image:BranchpointImage
+    Fill small holes?:Yes
+    Maximum hole size:10
+    Export the skeleton graph relationships?:No
+    Intensity image:None
+    File output directory:Default Output Folder|
+    Vertex file name:vertices.csv
+    Edge file name:edges.csv
+
+MeasureObjectSizeShape:[module_num:34|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Include this if you want to remeasure the size and shape features again for just the filtered dendrites and axons.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:AxonsFiltered, DendritesFiltered
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+ExportToDatabase:[module_num:35|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:["You can also select to export to excel sheets, however, that can't handle large data so I recommend to get used to the database export from the beginning on."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Database type:SQLite
+    Database name:DefaultDB
+    Add a prefix to table names?:No
+    Table prefix:
+    Output file location:Default Output Folder|Desktop\\current projects\\analysis_iN_5A24_dif64_screenMATRIX
+    Create a CellProfiler Analyst properties file?:Yes
+    Database host:
+    Username:
+    Password:
+    Name the SQLite database file:
+    Calculate the per-image mean values of object measurements?:No
+    Calculate the per-image median values of object measurements?:No
+    Calculate the per-image standard deviation values of object measurements?:No
+    Calculate the per-well mean values of object measurements?:No
+    Calculate the per-well median values of object measurements?:No
+    Calculate the per-well standard deviation values of object measurements?:No
+    Export measurements for all objects to the database?:All
+    Select the objects:Neurites_with_Nuclei,Nucleus,Soma_GFP
+    Maximum # of characters in a column name:64
+    Create one table per object, a single object table or a single object view?:One table per object type
+    Enter an image url prepend if you plan to access your files via http:
+    Write image thumbnails directly to the database?:No
+    Select the images for which you want to save thumbnails:
+    Auto-scale thumbnail pixel intensities?:Yes
+    Select the plate type:384
+    Select the plate metadata:None
+    Select the well metadata:Well
+    Include information for all images, using default values?:Yes
+    Properties image group count:1
+    Properties group field count:1
+    Properties filter field count:0
+    Workspace measurement count:1
+    Experiment name:
+    Which objects should be used for locations?:None
+    Enter a phenotype class table name if using the Classifier tool in CellProfiler Analyst:
+    Export object relationships?:No
+    Overwrite without warning?:Never
+    Access CellProfiler Analyst images via URL?:No
+    Select the classification type:Object
+    Select an image to include:None
+    Use the image name for the display?:Yes
+    Image name:Channel1
+    Channel color:red
+    Do you want to add group fields?:No
+    Enter the name of the group:
+    Enter the per-image columns which define the group, separated by commas:ImageNumber, Image_Metadata_Plate, Image_Metadata_Well
+    Do you want to add filter fields?:No
+    Automatically create a filter for each plate?:No
+    Create a CellProfiler Analyst workspace file?:No
+    Select the measurement display tool:ScatterPlot
+    Type of measurement to plot on the X-axis:Image
+    Enter the object name:None
+    Select the X-axis measurement:None
+    Select the X-axis index:ImageNumber
+    Type of measurement to plot on the Y-axis:Image
+    Enter the object name:None
+    Select the Y-axis measurement:None
+    Select the Y-axis index:ImageNumber
